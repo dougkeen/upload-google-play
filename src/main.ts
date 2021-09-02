@@ -122,6 +122,17 @@ async function run() {
         console.log(`Finished uploading to the Play Store: ${result}`)
     } catch (error) {
         core.setFailed(error.message)
+    } finally {
+        if (core.getInput('serviceAccountJsonPlainText', {required: false})) {
+            // Cleanup our auth file that we created.
+            core.info('Cleaning up service account json file');
+            fs.unlinkSync('./serviceAccountJson.json');
+            if (fs.existsSync('./serviceAccountJson.json')) {
+                core.error('Cleanup failed');
+            } else {
+                core.info('Cleaning succeeded');
+            }
+        }
     }
 }
 
